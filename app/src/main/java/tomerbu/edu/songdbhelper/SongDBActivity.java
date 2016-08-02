@@ -12,12 +12,17 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import tomerbu.edu.songdbhelper.db.SongContract;
+import tomerbu.edu.songdbhelper.db.SongDAO;
 import tomerbu.edu.songdbhelper.db.SongDBHelper;
+import tomerbu.edu.songdbhelper.models.Song;
 
 public class SongDBActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
+    SongDAO dao;
     private EditText etTitle;
     private EditText etArtist;
     private EditText etDuration;
@@ -30,7 +35,7 @@ public class SongDBActivity extends AppCompatActivity {
         setContentView(R.layout.activity_song_db);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        dao = new SongDAO(this);
         findViews();
 
     }
@@ -65,19 +70,19 @@ public class SongDBActivity extends AppCompatActivity {
     }
 
     public void insert(View view) {
-        SongDBHelper helper = new SongDBHelper(this);
-        SQLiteDatabase db = helper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(SongContract.Song.COL_TITLE, getSongTitle());
-        values.put(SongContract.Song.COL_ARTIST, getArtist());
-        values.put(SongContract.Song.COL_DURATION, getDuration());
-        values.put(SongContract.Song.COL_IMAGE_URI, getImageURI());
-
-        long insertedID = db.insert(SongContract.Song.TABLE_NAME, null, values);
+        if (!isValidInput())
+            return;
+        Song song = new Song(getSongTitle(),getArtist(), getDuration(), getImageURI());
+        long insertedID = dao.insert(song);
         Toast.makeText(SongDBActivity.this, "" + insertedID, Toast.LENGTH_SHORT).show();
+        clearEditexts();
+    }
 
-
+    private void clearEditexts() {
+        etImageURI.setText("");
+        etDuration.setText("");
+        etArtist.setText("");
+        etTitle.setText(null);
     }
 
 
@@ -98,11 +103,31 @@ public class SongDBActivity extends AppCompatActivity {
     }
 
     public void query(View view) {
+        ArrayList<Song> songs = dao.queryByTitle(getSongTitle());
+        for (Song s : songs) {
+            Toast.makeText(SongDBActivity.this, s.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void update(View view) {
+        Song song = new Song(getSongTitle(),getArtist(), getDuration(), getImageURI());
+        int rowsAffected = dao.update("5", song);
+        Toast.makeText(SongDBActivity.this, ""  + rowsAffected, Toast.LENGTH_SHORT).show();
+        clearEditexts();
     }
 
     public void delete(View view) {
+        int rowsAffected = dao.delete("6");
+        Toast.makeText(SongDBActivity.this, "" + rowsAffected, Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean isValidInput() {
+        boolean etTitleValid = getSongTitle().length() >= 2;
+
+        if (!etTitleValid){
+            etTitle.setError("Title Must be at least 2 characters Long");
+        }
+
+        return etTitleValid;
     }
 }

@@ -19,6 +19,13 @@ public class Song {
         this.imageURI = imageURI;
     }
 
+    public Song(String title, String artist, String duration, String imageURI) {
+        this.title = title;
+        this.artist = artist;
+        this.duration = duration;
+        this.imageURI = imageURI;
+    }
+
     public String getImageURI() {
         return imageURI;
     }
