@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import tomerbu.edu.songdbhelper.adapters.SongAdapter;
 import tomerbu.edu.songdbhelper.db.SongContract;
 import tomerbu.edu.songdbhelper.db.SongDAO;
 import tomerbu.edu.songdbhelper.db.SongDBHelper;
@@ -23,10 +26,7 @@ public class SongDBActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
     SongDAO dao;
-    private EditText etTitle;
-    private EditText etArtist;
-    private EditText etDuration;
-    private EditText etImageURI;
+    RecyclerView recyclerView;
 
 
     @Override
@@ -36,17 +36,13 @@ public class SongDBActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         dao = new SongDAO(this);
-        findViews();
+
+        recyclerView = (RecyclerView) findViewById(R.id.songRecycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new SongAdapter(this));
 
     }
 
-    private void findViews() {
-        etTitle = (EditText) findViewById(R.id.etSongName);
-        etArtist = (EditText) findViewById(R.id.etArtist);
-        etDuration = (EditText) findViewById(R.id.etDuration);
-        etImageURI = (EditText) findViewById(R.id.etImageURI);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,65 +65,5 @@ public class SongDBActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void insert(View view) {
-        if (!isValidInput())
-            return;
-        Song song = new Song(getSongTitle(),getArtist(), getDuration(), getImageURI());
-        long insertedID = dao.insert(song);
-        Toast.makeText(SongDBActivity.this, "" + insertedID, Toast.LENGTH_SHORT).show();
-        clearEditexts();
-    }
 
-    private void clearEditexts() {
-        etImageURI.setText("");
-        etDuration.setText("");
-        etArtist.setText("");
-        etTitle.setText(null);
-    }
-
-
-    public String getSongTitle(){
-        return etTitle.getText().toString();
-    }
-
-    public String getArtist(){
-        return etArtist.getText().toString();
-    }
-
-    public String getDuration(){
-        return etDuration.getText().toString();
-    }
-
-    public String getImageURI(){
-        return etImageURI.getText().toString();
-    }
-
-    public void query(View view) {
-        ArrayList<Song> songs = dao.queryByTitle(getSongTitle());
-        for (Song s : songs) {
-            Toast.makeText(SongDBActivity.this, s.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void update(View view) {
-        Song song = new Song(getSongTitle(),getArtist(), getDuration(), getImageURI());
-        int rowsAffected = dao.update("5", song);
-        Toast.makeText(SongDBActivity.this, ""  + rowsAffected, Toast.LENGTH_SHORT).show();
-        clearEditexts();
-    }
-
-    public void delete(View view) {
-        int rowsAffected = dao.delete("6");
-        Toast.makeText(SongDBActivity.this, "" + rowsAffected, Toast.LENGTH_SHORT).show();
-    }
-
-    public boolean isValidInput() {
-        boolean etTitleValid = getSongTitle().length() >= 2;
-
-        if (!etTitleValid){
-            etTitle.setError("Title Must be at least 2 characters Long");
-        }
-
-        return etTitleValid;
-    }
 }
