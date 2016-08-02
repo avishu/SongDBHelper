@@ -20,7 +20,7 @@ public class SongDBHelper extends SQLiteOpenHelper {
                                                         SongContract.Song.COL_ARTIST + " TEXT, " +
                                                         SongContract.Song.COL_DURATION + " TEXT, " +
                                                         SongContract.Song.COL_IMAGE_URI + " TEXT " +
-                                                    ");";
+                                                    "); ";
 
         db.execSQL(createSongTable);
      }
