@@ -32,7 +32,7 @@ public class SongDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String dropSongs = "DROP TABLE Songs;";
         db.execSQL(dropSongs);
-        
+
         onCreate(db);
     }
 }
