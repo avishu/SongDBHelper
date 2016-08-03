@@ -46,13 +46,13 @@ public class SongDAO {
         Cursor cursor = db.query(SongContract.Song.TABLE_NAME, null, null, null, null, null, null);
 
         //move to the first row:
-        cursor.moveToFirst();
+        if (cursor.moveToFirst()) {
 
-        do {
-            Song s = parseCursor(cursor);
-            songs.add(s);
-        } while (cursor.moveToNext());
-
+            do {
+                Song s = parseCursor(cursor);
+                songs.add(s);
+            } while (cursor.moveToNext());
+        }
 
         return songs;
     }
@@ -70,15 +70,18 @@ public class SongDAO {
                 SongContract.Song.COL_TITLE + " LIKE ?",
                 new String[]{title + "%"},
                 null, null,
-                SongContract.Song.COL_TITLE +" DESC"
+                SongContract.Song.COL_TITLE + " DESC"
         );
 
         ArrayList<Song> songs = new ArrayList<>();
-        cursor.moveToFirst();
 
-        do {
-            songs.add(parseCursor(cursor));
-        }while (cursor.moveToNext());
+        if (cursor.moveToFirst()) {
+
+            do {
+                songs.add(parseCursor(cursor));
+            } while (cursor.moveToNext());
+        }
+
         return songs;
     }
 
@@ -93,13 +96,13 @@ public class SongDAO {
         return new Song(title, id, artist, duration, imageURI);
     }
 
-    public int delete(String id){
+    public int delete(String id) {
         int rowsAffected = db.delete(SongContract.Song.TABLE_NAME, SongContract.Song.COL_ID + " = ?", new String[]{id});
         return rowsAffected;
     }
 
-    public int update(String id, Song s){
-         ContentValues values = getContentValues(s);
+    public int update(String id, Song s) {
+        ContentValues values = getContentValues(s);
 
 
         int rowsAffected = db.update(SongContract.Song.TABLE_NAME, values, SongContract.Song.COL_ID + " = ?", new String[]{id});
