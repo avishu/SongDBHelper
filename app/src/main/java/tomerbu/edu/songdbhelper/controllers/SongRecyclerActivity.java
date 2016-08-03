@@ -3,6 +3,10 @@ package tomerbu.edu.songdbhelper.controllers;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +53,7 @@ public class SongRecyclerActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.songRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        SongAdapter songAdapter = new SongAdapter(this);
+        final SongAdapter songAdapter = new SongAdapter(this);
 
 
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -60,11 +64,24 @@ public class SongRecyclerActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                Toast.makeText(SongRecyclerActivity.this, "sdf", Toast.LENGTH_SHORT).show();
-                //remove from the arrayList
+                 //remove from the arrayList
                 //remove from the database
                 //notify item removed(position)
-                int position = viewHolder.getAdapterPosition();
+                //int position = viewHolder.getAdapterPosition();
+                SongAdapter.SongViewHolder holder = (SongAdapter.SongViewHolder) viewHolder;
+                songAdapter.deleteByHolder(holder);
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                float right = viewHolder.itemView.getRight();
+                float top  = viewHolder.itemView.getTop();
+                float bottom = viewHolder.itemView.getBottom();
+
+                Drawable d = new ColorDrawable(Color.parseColor("#4CAF50"));
+                d.setBounds((int) (right + dX), (int) top, (int) right, (int) bottom);
+                d.draw(c);
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         });
 

@@ -43,7 +43,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     }
 
     @Override
-    public void onBindViewHolder(SongViewHolder holder, final int position) {
+    public void onBindViewHolder(final SongViewHolder holder, int position) {
         final Song s = songs.get(position);
 
         holder.tvTitle.setText(s.getTitle());
@@ -54,12 +54,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Delete from ArrayList:
-                songs.remove(s);
-                //Delete from database:
-                dao.delete(s.getId());
-                //Notify the adapter:
-                notifyItemRemoved(position);
+                deleteByHolder(holder);
             }
         });
         holder.layout.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +65,22 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
                 context.startActivity(intent);
             }
         });
+    }
+
+    public void deleteByHolder(SongViewHolder holder){
+        //Search the song in the arraylist
+        for (int i = 0; i < songs.size(); i++) {
+            Song s = songs.get(i);
+            //if found:
+            if (s.getId().equals(holder._ID)){
+                //remove the song from the arrayList
+                songs.remove(s);
+                //remove the song from the dao
+                dao.delete(s.getId());
+                //notify the adapter
+                notifyItemRemoved(i);
+            }
+        }
     }
 
     @Override
