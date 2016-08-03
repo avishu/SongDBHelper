@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,7 @@ import tomerbu.edu.songdbhelper.db.SongDAO;
 import tomerbu.edu.songdbhelper.db.SongDBHelper;
 import tomerbu.edu.songdbhelper.models.Song;
 
-public class SongDBActivity extends AppCompatActivity {
+public class SongRecyclerActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
     SongDAO dao;
@@ -48,10 +49,29 @@ public class SongDBActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.songRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new SongAdapter(this));
+        SongAdapter songAdapter = new SongAdapter(this);
+
+
+        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                Toast.makeText(SongRecyclerActivity.this, "sdf", Toast.LENGTH_SHORT).show();
+                //remove from the arrayList
+                //remove from the database
+                //notify item removed(position)
+                int position = viewHolder.getAdapterPosition();
+            }
+        });
+
+        helper.attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(songAdapter);
 
     }
-
 
 
     @Override

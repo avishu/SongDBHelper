@@ -64,7 +64,7 @@ public class SongDetailsActivity extends AppCompatActivity {
             dao.insert(s);
         }
 
-        Intent mainIntent = new Intent(this, SongDBActivity.class);
+        Intent mainIntent = new Intent(this, SongRecyclerActivity.class);
         startActivity(mainIntent);
 
         //finish();

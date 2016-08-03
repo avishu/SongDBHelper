@@ -23,6 +23,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     private final LayoutInflater inflater;
     private ArrayList<Song> songs;
     private Context context;
+    private SongDAO dao;
 
     public SongAdapter(Context context) {
         this.context = context;
@@ -31,7 +32,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     }
 
     public void requery() {
-        SongDAO dao = new SongDAO(context);
+        dao = new SongDAO(context);
         songs = dao.query();
     }
 
@@ -42,7 +43,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     }
 
     @Override
-    public void onBindViewHolder(SongViewHolder holder, int position) {
+    public void onBindViewHolder(SongViewHolder holder, final int position) {
         final Song s = songs.get(position);
 
         holder.tvTitle.setText(s.getTitle());
@@ -53,7 +54,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "" + s.getId(), Toast.LENGTH_SHORT).show();
+                //Delete from ArrayList:
+                songs.remove(s);
+                //Delete from database:
+                dao.delete(s.getId());
+                //Notify the adapter:
+                notifyItemRemoved(position);
             }
         });
         holder.layout.setOnClickListener(new View.OnClickListener() {
