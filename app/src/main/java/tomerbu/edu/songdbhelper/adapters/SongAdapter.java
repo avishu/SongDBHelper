@@ -1,6 +1,7 @@
 package tomerbu.edu.songdbhelper.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import tomerbu.edu.songdbhelper.R;
+import tomerbu.edu.songdbhelper.controllers.SongDetailsActivity;
 import tomerbu.edu.songdbhelper.db.SongDAO;
 import tomerbu.edu.songdbhelper.models.Song;
 
@@ -48,12 +50,18 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.tvDuration.setText(s.getDuration());
         holder._ID = s.getId();
 
+        holder.ivDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "" + s.getId(), Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Clicked " + s.getId(), Toast.LENGTH_SHORT).show();
-                //intent
-                //putExtra _ID
+                Intent intent = new Intent(context, SongDetailsActivity.class);
+                intent.putExtra("_ID", s.getId());
+                context.startActivity(intent);
             }
         });
     }
@@ -64,6 +72,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     }
 
     public class SongViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivDelete;
         String _ID;
         TextView tvTitle;
         TextView tvDuration;
@@ -81,6 +90,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
             ivArt = (ImageView) v.findViewById(R.id.imageView);
             layout = (RelativeLayout) v.findViewById(R.id.layout);
+            ivDelete = (ImageView) v.findViewById(R.id.ivDelete);
         }
     }
 }

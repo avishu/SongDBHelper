@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import tomerbu.edu.songdbhelper.R;
@@ -13,6 +14,8 @@ import tomerbu.edu.songdbhelper.models.Song;
 public class SongDetailsActivity extends AppCompatActivity {
 
     EditText etSongTitle, etArtist, etDuration, etImageUri;
+    Button btnSaveOrUpdate;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,17 +26,24 @@ public class SongDetailsActivity extends AppCompatActivity {
         etSongTitle = (EditText) findViewById(R.id.etTitle);
         etDuration = (EditText) findViewById(R.id.etDuration);
         etImageUri = (EditText) findViewById(R.id.etImage);
+        btnSaveOrUpdate = (Button) findViewById(R.id.btnSave);
 
         Intent intent = getIntent();
+        id = intent.getStringExtra("_ID");
 
+        if (id != null) {
+            //init the dao:
+            SongDAO dao = new SongDAO(this);
+            //get the song from the dao by id
+            Song s = dao.query(id);
 
-       // String id = intent.getStringExtra("_ID");
-
-        //if id is not null:
-        //Take the song by id from the database:
-        //AND Put the song detials in the editexts
-        //finally:
-        //The save method should call update instead of insert
+            //fill the edittext using the song:
+            etArtist.setText(s.getArtist());
+            etSongTitle.setText(s.getTitle());
+            etDuration.setText(s.getDuration());
+            etImageUri.setText(s.getImageURI());
+        }
+        btnSaveOrUpdate.setText(id != null ? "Update" : "Insert");
     }
 
     public void save(View view) {
@@ -48,7 +58,11 @@ public class SongDetailsActivity extends AppCompatActivity {
 
 
         //if (_id!=null) call update instead.
-        dao.insert(s);
+        if (id != null) {
+            dao.update(id, s);
+        } else {
+            dao.insert(s);
+        }
 
         Intent mainIntent = new Intent(this, SongDBActivity.class);
         startActivity(mainIntent);

@@ -80,4 +80,5 @@ public class SongDBActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SongDetailsActivity.class);
         startActivity(intent);
     }
+
 }

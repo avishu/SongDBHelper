@@ -60,6 +60,7 @@ public class SongDAO {
     public Song query(String id) {
         //The Data set: The Query result:
         Cursor cursor = db.query(SongContract.Song.TABLE_NAME, null, " _id = ? ", new String[]{id}, null, null, null);
+        cursor.moveToFirst();
         return parseCursor(cursor);
     }
 
