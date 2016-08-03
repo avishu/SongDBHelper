@@ -1,6 +1,7 @@
-package tomerbu.edu.songdbhelper;
+package tomerbu.edu.songdbhelper.controllers;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import tomerbu.edu.songdbhelper.R;
 import tomerbu.edu.songdbhelper.adapters.SongAdapter;
 import tomerbu.edu.songdbhelper.db.SongContract;
 import tomerbu.edu.songdbhelper.db.SongDAO;
@@ -28,6 +30,13 @@ public class SongDBActivity extends AppCompatActivity {
     SongDAO dao;
     RecyclerView recyclerView;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SongAdapter adapter = (SongAdapter) recyclerView.getAdapter();
+        adapter.requery();
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ public class SongDBActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SongAdapter(this));
 
     }
+
 
 
     @Override
@@ -66,4 +76,8 @@ public class SongDBActivity extends AppCompatActivity {
     }
 
 
+    public void gotoDetails(View view) {
+        Intent intent = new Intent(this, SongDetailsActivity.class);
+        startActivity(intent);
+    }
 }

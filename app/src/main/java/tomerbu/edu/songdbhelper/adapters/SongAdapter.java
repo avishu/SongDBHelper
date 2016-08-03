@@ -23,9 +23,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
     public SongAdapter(Context context) {
         this.context = context;
+       requery();
+        inflater = LayoutInflater.from(context);
+    }
+
+    public void requery() {
         SongDAO dao = new SongDAO(context);
         songs = dao.query();
-        inflater = LayoutInflater.from(context);
     }
 
     @Override
