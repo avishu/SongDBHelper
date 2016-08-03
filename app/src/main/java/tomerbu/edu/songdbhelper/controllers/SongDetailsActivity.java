@@ -25,7 +25,10 @@ public class SongDetailsActivity extends AppCompatActivity {
         etImageUri = (EditText) findViewById(R.id.etImage);
 
         Intent intent = getIntent();
-        String id = intent.getStringExtra("_ID");
+
+
+       // String id = intent.getStringExtra("_ID");
+
         //if id is not null:
         //Take the song by id from the database:
         //AND Put the song detials in the editexts

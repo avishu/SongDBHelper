@@ -53,7 +53,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             public void onClick(View view) {
                 Toast.makeText(context, "Clicked " + s.getId(), Toast.LENGTH_SHORT).show();
                 //intent
-                //putExtra ID
+                //putExtra _ID
             }
         });
     }
