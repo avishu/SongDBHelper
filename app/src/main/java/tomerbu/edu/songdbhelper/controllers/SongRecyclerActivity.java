@@ -1,8 +1,10 @@
 package tomerbu.edu.songdbhelper.controllers;
 
-import android.content.ContentValues;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,19 +19,16 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import tomerbu.edu.songdbhelper.R;
 import tomerbu.edu.songdbhelper.adapters.SongAdapter;
-import tomerbu.edu.songdbhelper.db.SongContract;
 import tomerbu.edu.songdbhelper.db.SongDAO;
-import tomerbu.edu.songdbhelper.db.SongDBHelper;
+import tomerbu.edu.songdbhelper.db.SongsProvider;
 import tomerbu.edu.songdbhelper.models.Song;
 
-public class SongRecyclerActivity extends AppCompatActivity {
+public class SongRecyclerActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private FloatingActionButton fab;
     SongDAO dao;
@@ -38,9 +37,6 @@ public class SongRecyclerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SongAdapter adapter = (SongAdapter) recyclerView.getAdapter();
-        adapter.requery();
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -51,9 +47,16 @@ public class SongRecyclerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         dao = new SongDAO(this);
 
+        //start the loader task:
+        getLoaderManager().initLoader(0, null, this );
+
+    }
+
+    private void setupRecycler(ArrayList<Song> songs) {
+
         recyclerView = (RecyclerView) findViewById(R.id.songRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final SongAdapter songAdapter = new SongAdapter(this);
+        final SongAdapter songAdapter = new SongAdapter(this, songs);
 
 
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -64,7 +67,7 @@ public class SongRecyclerActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                 //remove from the arrayList
+                //remove from the arrayList
                 //remove from the database
                 //notify item removed(position)
                 //int position = viewHolder.getAdapterPosition();
@@ -87,7 +90,6 @@ public class SongRecyclerActivity extends AppCompatActivity {
 
         helper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(songAdapter);
-
     }
 
 
@@ -118,4 +120,20 @@ public class SongRecyclerActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, SongsProvider.SONGS_URI, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        ArrayList<Song> songs = SongDAO.getSongs(data);
+        setupRecycler(songs);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }

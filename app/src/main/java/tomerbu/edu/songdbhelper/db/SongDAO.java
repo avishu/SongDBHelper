@@ -66,7 +66,7 @@ public class SongDAO {
         return songs;
     }
 
-    public ArrayList<Song> getSongs(Cursor cursor) {
+    public static ArrayList<Song> getSongs(Cursor cursor) {
         ArrayList<Song> songs = new ArrayList<>();
 
         //The Data set: The Query result:
@@ -112,7 +112,7 @@ public class SongDAO {
         return songs;
     }
 
-    private Song parseCursor(Cursor cursor) {
+    private static Song parseCursor(Cursor cursor) {
         //Read the Line:
         String title = cursor.getString(cursor.getColumnIndex(SongContract.Song.COL_TITLE));
         String artist = cursor.getString(cursor.getColumnIndex(SongContract.Song.COL_ARTIST));
