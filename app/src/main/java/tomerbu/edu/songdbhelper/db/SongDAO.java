@@ -39,11 +39,37 @@ public class SongDAO {
     }
 
 
+    public static ContentValues getValues(Song s){
+
+        ContentValues values = new ContentValues();
+        values.put(SongContract.Song.COL_TITLE, s.getTitle());
+        values.put(SongContract.Song.COL_ARTIST, s.getArtist());
+        values.put(SongContract.Song.COL_DURATION, s.getDuration());
+        values.put(SongContract.Song.COL_IMAGE_URI, s.getImageURI());
+        return values;
+    }
     public ArrayList<Song> query() {
         ArrayList<Song> songs = new ArrayList<>();
 
         //The Data set: The Query result:
         Cursor cursor = db.query(SongContract.Song.TABLE_NAME, null, null, null, null, null, null);
+
+        //move to the first row:
+        if (cursor.moveToFirst()) {
+
+            do {
+                Song s = parseCursor(cursor);
+                songs.add(s);
+            } while (cursor.moveToNext());
+        }
+
+        return songs;
+    }
+
+    public ArrayList<Song> getSongs(Cursor cursor) {
+        ArrayList<Song> songs = new ArrayList<>();
+
+        //The Data set: The Query result:
 
         //move to the first row:
         if (cursor.moveToFirst()) {

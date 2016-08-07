@@ -1,6 +1,7 @@
 package tomerbu.edu.songdbhelper.controllers;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 
 import tomerbu.edu.songdbhelper.R;
 import tomerbu.edu.songdbhelper.db.SongDAO;
+import tomerbu.edu.songdbhelper.db.SongsProvider;
 import tomerbu.edu.songdbhelper.models.Song;
 
 public class SongDetailsActivity extends AppCompatActivity {
@@ -59,9 +61,14 @@ public class SongDetailsActivity extends AppCompatActivity {
 
         //if (_id!=null) call update instead.
         if (id != null) {
-            dao.update(id, s);
+            //dao.update(id, s);
+            Uri uri = SongsProvider.SONGS_URI.buildUpon().appendPath(id).build();
+
+            getContentResolver().update(uri,SongDAO.getValues(s),null, null);
+
         } else {
-            dao.insert(s);
+            //dao.insert(s);
+            getContentResolver().insert(SongsProvider.SONGS_URI, SongDAO.getValues(s));
         }
 
         Intent mainIntent = new Intent(this, SongRecyclerActivity.class);

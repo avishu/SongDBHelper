@@ -2,6 +2,8 @@ package tomerbu.edu.songdbhelper.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import tomerbu.edu.songdbhelper.R;
 import tomerbu.edu.songdbhelper.controllers.SongDetailsActivity;
 import tomerbu.edu.songdbhelper.db.SongDAO;
+import tomerbu.edu.songdbhelper.db.SongsProvider;
 import tomerbu.edu.songdbhelper.models.Song;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
@@ -34,6 +37,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     public void requery() {
         dao = new SongDAO(context);
         songs = dao.query();
+
+      // Uri uri =  SongsProvider.SONGS_URI.buildUpon().appendPath("4").build();
+        Uri uri =  SongsProvider.SONGS_URI;
+        //
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        songs = dao.getSongs(cursor);
     }
 
     @Override
@@ -76,7 +85,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
                 //remove the song from the arrayList
                 songs.remove(s);
                 //remove the song from the dao
-                dao.delete(s.getId());
+                //dao.delete(s.getId());
+                Uri uri = SongsProvider.SONGS_URI.buildUpon().appendPath(holder._ID).build();
+
+                context.getContentResolver().delete(uri, null, null);
+
                 //notify the adapter
                 notifyItemRemoved(i);
             }

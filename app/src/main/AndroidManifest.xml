@@ -18,7 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controllers.SongDetailsActivity"></activity>
+        <activity android:name=".controllers.SongDetailsActivity" />
+
+        <provider
+            android:name=".db.SongsProvider"
+            android:authorities="edu.tomerbu"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
