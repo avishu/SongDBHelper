@@ -29,7 +29,7 @@ import tomerbu.edu.songdbhelper.db.SongsProvider;
 import tomerbu.edu.songdbhelper.models.Song;
 
 public class SongRecyclerActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
-
+  //stam
     private FloatingActionButton fab;
     SongDAO dao;
     RecyclerView recyclerView;

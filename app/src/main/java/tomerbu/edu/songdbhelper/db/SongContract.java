@@ -5,6 +5,7 @@ package tomerbu.edu.songdbhelper.db;
  */
 public class SongContract {
     public class Song{
+        //stam
         public static final String TABLE_NAME = "Songs";
         public static final String COL_ID = "_id";
         public static final String COL_ARTIST = "artist";
